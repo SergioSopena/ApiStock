@@ -1,0 +1,155 @@
+/*
+ * ApiStock · Sistema visual (Fase 2)
+ * Tailwind CSS v4: los tokens viven en @theme y generan utilidades (bg-paper, text-ink, rounded-tile…).
+ * Fuentes autoalojadas (funcionan offline). Importar en main.tsx:
+ *   import "@fontsource-variable/bricolage-grotesque";
+ *   import "@fontsource-variable/instrument-sans";
+ */
+@import "tailwindcss";
+
+@theme {
+  /* ── Neutros: papel verdoso y tinta de bosque (no negro puro) ───────────── */
+  --color-paper: #f4f5f0;        /* fondo de la app */
+  --color-surface: #ffffff;      /* tarjetas, hojas, formularios */
+  --color-line: #dee1d8;         /* bordes habituales */
+  --color-line-strong: #c3c8bb;  /* bordes de controles */
+  --color-ink: #17211c;          /* texto principal */
+  --color-ink-soft: #44504a;     /* texto secundario */
+  --color-ink-mute: #5f6a64;     /* texto terciario (≥4.5:1 sobre paper) */
+
+  /* ── Miel: acción principal. Relleno con texto ink; el texto sobre claro usa honey-700 ── */
+  --color-honey-50: #fef8e6;
+  --color-honey-100: #fcefcb;
+  --color-honey-400: #f2b01e;
+  --color-honey-500: #e39b0b;
+  --color-honey-700: #8a5a00;
+
+  /* ── Pino: confirmaciones y estados positivos ───────────────────────────── */
+  --color-pine-100: #dcebe2;
+  --color-pine-600: #357055;
+  --color-pine-700: #2b5a43;
+
+  /* ── Estados de unidad (fondo / texto). Siempre acompañados de etiqueta y medidor ── */
+  --color-st-new-bg: #d9eef5;   --color-st-new-fg: #145a73;
+  --color-st-great-bg: #daf0e0; --color-st-great-fg: #1e6b3a;
+  --color-st-good-bg: #e6f0d2;  --color-st-good-fg: #3e6b12;
+  --color-st-used-bg: #fbebc2;  --color-st-used-fg: #7a5a00;
+  --color-st-poor-bg: #fbe0cc;  --color-st-poor-fg: #9a4a0a;
+  --color-st-bad-bg: #f9dada;   --color-st-bad-fg: #a32323;
+
+  /* ── Compatibilidad (reutiliza la escala anterior) ──────────────────────────
+     compatible = pine · encaja pero no óptimo = st-used · no compatible = st-bad
+     sin probar = gris con borde discontinuo (nunca se confunde con un resultado) */
+  --color-untested-bg: #e9ebe4;
+  --color-untested-fg: #5f6a64;
+
+  /* ── Sistemas apícolas: color de marca de cada sistema (solo para la pastilla) ── */
+  --color-sys-langstroth: #2f5d8a;
+  --color-sys-layens: #7a3f8c;
+
+  /* ── Tipografía ─────────────────────────────────────────────────────────── */
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs: 0.75rem;     /* 12 · metadatos */
+  --text-sm: 0.875rem;    /* 14 · secundario, tablas */
+  --text-base: 1rem;      /* 16 · cuerpo y campos (evita zoom en iOS) */
+  --text-lg: 1.125rem;    /* 18 · títulos de tarjeta */
+  --text-xl: 1.375rem;    /* 22 · título de pantalla (móvil) */
+  --text-2xl: 1.75rem;    /* 28 · título de pantalla (escritorio) */
+  --text-4xl: 2.5rem;     /* 40 · cifra total en Inicio */
+
+  /* ── Forma: el radio sube con la jerarquía del elemento ─────────────────── */
+  --radius-chip: 0.5rem;
+  --radius-ctl: 0.75rem;
+  --radius-card: 1rem;
+  --radius-tile: 1.375rem;
+  --radius-sheet: 1.5rem;
+
+  /* ── Elevación: solo hojas y menús; las tarjetas se separan con borde ───── */
+  --shadow-float: 0 8px 28px -8px rgb(23 33 28 / 0.28), 0 2px 6px rgb(23 33 28 / 0.08);
+
+  /* ── Movimiento ─────────────────────────────────────────────────────────── */
+  --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    /* Solo modo claro: se declara para que el navegador no oscurezca controles nativos */
+    color-scheme: light;
+  }
+  body {
+    min-height: 100dvh;
+    overscroll-behavior-y: none; /* evita el rebote que parece recarga en la PWA */
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 92;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  /* Foco visible siempre, en cualquier fondo */
+  :focus-visible {
+    outline: 3px solid var(--color-honey-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-chip);
+  }
+  /* Números alineados en cantidades y códigos */
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+   * Placa de código: el elemento memorable de la app.
+   * Imita la etiqueta rotulada en una caja de colmena. Se usa SIEMPRE que se muestra un código
+   * (listas, fichas, resultados, selectores) para que se reconozca de un vistazo.
+   */
+  .code-plate {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-chip);
+    background: var(--color-honey-100);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .code-plate--lg { font-size: var(--text-xl); padding: 0.25rem 0.75rem; border-width: 2.5px; }
+
+  /* Controles táctiles: 48 px mínimo en móvil */
+  .tap { min-height: 3rem; min-width: 3rem; }
+
+  /* Hoja inferior en móvil / panel lateral en escritorio */
+  .sheet { border-radius: var(--radius-sheet) var(--radius-sheet) 0 0; box-shadow: var(--shadow-float); }
+  @media (min-width: 1024px) {
+    .sheet { border-radius: var(--radius-card); }
+  }
+}
+
+@layer utilities {
+  /* Zonas seguras del iPhone con la PWA instalada */
+  .pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+
+  /* Línea discontinua para "sin probar" y estados vacíos */
+  .border-untested { border: 1.5px dashed var(--color-line-strong); }
+}

@@ -1,0 +1,21 @@
+# ApiStock · configuración local de Supabase (CLI).
+# En producción, los ajustes de [auth] se replican en el panel de Supabase (ver supabase/README.md).
+project_id = "apistock"
+
+[db]
+major_version = 17        # requiere >= 15 (NULLS NOT DISTINCT)
+
+[auth]
+enable_signup = false              # registro público DESACTIVADO
+minimum_password_length = 10
+site_url = "http://localhost:5173"
+# Añade aquí la URL de GitHub Pages para la recuperación de contraseña (PKCE):
+additional_redirect_urls = ["http://localhost:5173", "https://TU_USUARIO.github.io/apistock/"]
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+double_confirm_changes = true
+
+[functions.admin-create-user]
+verify_jwt = true
