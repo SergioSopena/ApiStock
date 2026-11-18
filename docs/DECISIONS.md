@@ -32,6 +32,11 @@ Estado: **P** = propuesta pendiente de confirmar · **C** = confirmada por el us
 | D26 | Unidades de un tipo por cantidad pueden coexistir con lotes (individualización). Un tipo individualizado nunca tiene lotes (trigger). | T |
 | D27 | La importación acepta solo la versión de esquema actual; las copias antiguas las migra el cliente. Límite servidor 5 MiB. | T |
 | D28 | La Edge Function de usuarios ofrece crear, listar, cambiar contraseña y eliminar. La recuperación de contraseña por correo la hace el propio usuario con Auth. | T |
+| D29 | La Fase 4 se entrega en dos partes: **4A** (proyecto, acceso, descarga, inventario, ubicaciones, alta múltiple, despliegue) y **4B** (mover, bajas, individualizar, edición múltiple, deshacer, categorías y tipos). Motivo: poder verificar cada parte sin entorno de compilación propio. | T |
+| D30 | La app necesita sincronización mínima ya en la 4A (descargar el catálogo sembrado en servidor y enviar la cola). La Fase 6 añade la resolución de conflictos en pantalla, rebase de operaciones pendientes y robustez de reintentos. | T |
+| D31 | Despliegue por GitHub Actions con `vite build` (sin comprobación de tipos) para que un error de tipos no impida publicar; el workflow `ci.yml` comprueba tipos y pruebas por separado. | T |
+| D32 | Las ediciones locales suben `version` en 1 por mutación, igual que el servidor, para que las operaciones encadenadas lleven `base_version` coherente sin esperar a sincronizar. | T |
+| D33 | Durante una descarga no se pisan cambios locales: si hay operaciones pendientes, se envían primero. | T |
 
 ## D17 · Catálogo inicial propuesto
 

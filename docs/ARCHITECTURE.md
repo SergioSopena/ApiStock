@@ -1,6 +1,6 @@
 # ApiStock · Arquitectura
 
-Documento vivo. Última revisión: Fase 3. Las decisiones y su motivo están en `DECISIONS.md`.
+Documento vivo. Última revisión: Fase 4A. Las decisiones y su motivo están en `DECISIONS.md`.
 
 ## 1. Stack
 
